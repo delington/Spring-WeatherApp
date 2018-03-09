@@ -1,5 +1,7 @@
 package com.weather.controller;
 
+import java.util.Map;
+
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -44,10 +46,15 @@ public class PublicController {
         if (bindingResult.hasErrors()) {
             return "index";
         }
-
+        
         log.info("PublicController /process endpoint called. PublicService.process method calling...");
-        publicService.process(model, cityName, apiProvider);
-        log.info("PublicService.process method finished. Returning process page...");
+        Map<String, String> attrMap = publicService.process(cityName, apiProvider);
+        log.info("PublicService.process method finished.");
+        
+        model.addAttribute("imgUrl", attrMap.get("imgUrl"));
+        model.addAttribute("temp", attrMap.get("temp"));
+        model.addAttribute("desc", attrMap.get("desc"));
+        model.addAttribute("cityName", cityName);
         
         return "process";
     }

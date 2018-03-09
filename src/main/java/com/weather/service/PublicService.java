@@ -2,6 +2,8 @@ package com.weather.service;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -60,28 +61,30 @@ public class PublicService {
         this.darkSkyRepo = darkSkyRepo;
     }
 
-    public void process(Model model, String cityName, String apiProvider) 
+    public Map<String, String> process(String cityName, String apiProvider) 
             throws JsonProcessingException, IOException {
 
+        Map<String, String> attrMap = new HashMap<>();
         String url = getOpenWeatherUrl(cityName);
 
         if (apiProvider.equals("openWeather") && OPEN_WEATHER_FORMAT.equalsIgnoreCase("json")) {
             
             log.info("OpenWeather provider called with JSON");
-            openWeatherProviderProcess(url, model, cityName);
+            attrMap = openWeatherProviderProcess(url, cityName);
         } else if (apiProvider.equals("openWeather") && OPEN_WEATHER_FORMAT.equalsIgnoreCase("xml")) {
             
             log.info("OpenWeather provider called with XML");
-            openWeatherProviderProcessWithXml(url, model, cityName);
+            attrMap = openWeatherProviderProcessWithXml(url, cityName);
         } else if (apiProvider.equals("darkSky")) {
             
             log.info("DarkSky provider called");
-            darkSkyProviderProcess(model, cityName);
+            attrMap = darkSkyProviderProcess(cityName);
         }
         
+        return attrMap;
     }
     
-    private void openWeatherProviderProcess(String url, Model model, String cityName)
+    private Map<String, String> openWeatherProviderProcess(String url, String cityName)
             throws JsonProcessingException, IOException {
 
         OpenWeatherWrapper wrapper = openApiRepo.getInformationAndMapToObject(url);
@@ -95,24 +98,26 @@ public class PublicService {
         String temp = wrapper.getMainInfromation().getTemp();
         String desc = wrapper.getWeatherList().get(0).getDescription();
         
-        model.addAttribute("imgUrl", imgUrl);
-        model.addAttribute("temp", temp);
-        model.addAttribute("desc", desc);
-        model.addAttribute("cityName", cityName);
+        Map<String, String> attributeMap = new HashMap<>();
+        attributeMap.put("imgUrl", imgUrl);
+        attributeMap.put("temp", temp);
+        attributeMap.put("desc", desc);
         
         log.info(String.format("OpenWeatherProvider called: temp=[%s], desc=[%s],"
                 + " cityName=[%s]", temp, desc, cityName));
+        
+        return attributeMap;
     }
     
-    private String openWeatherProviderProcessWithXml(String url, Model model, String cityName)
+    private Map<String, String> openWeatherProviderProcessWithXml(String url, String cityName)
             throws JsonProcessingException, IOException {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 
-        return "process";
+        return null;
     }
     
-    private void darkSkyProviderProcess(Model model, String cityName)
+    private Map<String, String> darkSkyProviderProcess(String cityName)
             throws JsonProcessingException, IOException {
         Location location = getGeolocation(cityName);
 
@@ -127,12 +132,15 @@ public class PublicService {
         String temp = wrapper.getCurrentWeather().getTemperature();
         String desc = wrapper.getHourWeather().getSummary();
         
-        model.addAttribute("temp", temp);
-        model.addAttribute("desc", desc);
-        model.addAttribute("cityName", cityName);
+        Map<String, String> attributeMap = new HashMap<>();
+        attributeMap.put("imgUrl", "");
+        attributeMap.put("temp", temp);
+        attributeMap.put("desc", desc);
         
         log.info(String.format("DarkSky API called and returned: temp=[%s], desc=[%s],"
                 + " cityName=[%s]", temp, desc, cityName));
+        
+        return attributeMap;
     }
     
     private Location getGeolocation(String cityName) throws JsonProcessingException, IOException {

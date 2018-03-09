@@ -1,7 +1,7 @@
 <html>
 <body>
 	<h1 th:text="'Weather in '  + ${cityName}"></h1>
-	<img th:src="${imgUrl}" height="100" width="100" />
+	<img th:src="${imgUrl}" alt="No picture available" height="100" width="100" />
 	<p th:text="'Weather description: ' + ${desc}"></p>
 	<br></br>
 	<p th:text="'Temperature: ' + ${temp} + ' Celsius'"></p>
