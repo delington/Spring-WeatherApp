@@ -1,0 +1,13 @@
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymleaf.org">
+<body>
+	<section>
+		<h2>Sorry but you encountered with an exception:</h2>
+		<p th:text="${exception}"></p>
+		<br></br>
+		<form action="/" method="POST">
+        <button style="height:70px;width:200px">Try again!</button>
+    </form>
+	</section>
+</body>
+</html>
