@@ -5,6 +5,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 import org.junit.Before;
@@ -35,20 +36,17 @@ public class PublicServiceHelperTest {
     
     @Before
     public void setup() {
-        googleRepo = mock(GoogleApiRepository.class);
-        
         ReflectionTestUtils.setField(serviceHelper, "OPEN_WEATHER_APPID", "3d33157b92c33f9c5afa4c9a37b13715");
         ReflectionTestUtils.setField(serviceHelper, "OPEN_WEATHER_FORMAT", "json");
         ReflectionTestUtils.setField(serviceHelper, "GEOLOCATION_APPID", "AIzaSyC3uvCOYFAgPG3e33QFozetMUh69oRBxrg");
-        ReflectionTestUtils.setField(serviceHelper, "googleApiRepo", new GoogleApiRepository());
     }
     
     @Test
-    public void checkGetOpenWeatherUrl() {
+    public void checkGetOpenWeatherUrl() throws UnsupportedEncodingException {
         //GIVEN 
         String city = "Szeged";
         //WHEN
-        String result = ReflectionTestUtils.invokeMethod(serviceHelper, "getOpenWeatherUrl", city);
+        String result = serviceHelper.getOpenWeatherUrl(city);
         //THEN
         assertThat(result, containsString(
             "http://api.openweathermap.org/data/2.5/weather?q=Szeged&units=metric"
@@ -61,7 +59,7 @@ public class PublicServiceHelperTest {
         Geolocation geo = new Geolocation();
         Result result = new Result();
         Geometry geometry = new Geometry();
-        Location location = new Location("46.2530102", "20.1414254");
+        Location location = new Location();
         
         ArrayList<Result> resultList = new ArrayList<>();
         
@@ -70,16 +68,14 @@ public class PublicServiceHelperTest {
         geometry.setLocation(location);
         result.setGeometry(geometry);
         resultList.add(result);
-        
         geo.setResults(resultList);
         
         Mockito.when(googleRepo.getInformationAndMapToObject(BDDMockito.anyString())).thenReturn(geo);
-        
         //WHEN
         Location locationRes = serviceHelper.getGeolocation("Szeged");
         //THEN
-        assertThat(locationRes.getLatitude(), containsString("46.253"));
-        assertThat(locationRes.getLongitude(), containsString("20.1414"));
+        assertThat(locationRes.getLatitude(), containsString("46.2530102"));
+        assertThat(locationRes.getLongitude(), containsString("20.1414254"));
     }
     
 }
