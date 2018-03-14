@@ -130,6 +130,10 @@ public class PublicServiceHelper {
 
         log.info(String.format("Geolocation asked from Google Map API. Geolocation=[%s].",
                 geolocation));
+        
+        if(geolocation == null) {
+            throw new NullPointerException("Geolocation returned with null!");
+        }
         return geolocation.getResults().get(0).getGeometry().getLocation();
     }
 

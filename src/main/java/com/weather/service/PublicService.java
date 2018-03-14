@@ -9,8 +9,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.weather.model.Geolocation;
+import com.weather.model.Geolocation.Result.Geometry.Location;
 
 @Service
 public class PublicService {
@@ -19,6 +22,9 @@ public class PublicService {
     
     @Value("${api.format.open-weather}")
     private String OPEN_WEATHER_FORMAT;
+
+    @Value("${api.api-key.google-maps}")
+    private String GEOLOCATION_APPID;
 
     private PublicServiceHelper serviceHelper;
     

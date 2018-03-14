@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class OpenWeatherWrapper {
     
     @JsonProperty("weather")
-    private List<Weather> weatherList = new ArrayList<>();;
+    private List<Weather> weatherList = new ArrayList<>();
     
     @JsonProperty("main")
     private MainInformation mainInfromation;
