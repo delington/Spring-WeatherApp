@@ -23,6 +23,11 @@ public class Geolocation {
             @JsonIgnoreProperties(ignoreUnknown = true)
             public static class Location {
                 
+                public Location(String latitude, String longitude) {
+                    this.latitude = latitude;
+                    this.longitude = longitude;
+                }
+
                 @JsonProperty("lat")
                 private String latitude;
                 
