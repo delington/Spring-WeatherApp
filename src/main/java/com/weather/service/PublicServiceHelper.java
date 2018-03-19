@@ -16,11 +16,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.weather.model.DarkSkyWrapper;
-import com.weather.model.Geolocation;
 import com.weather.model.OpenWeatherWrapper;
 import com.weather.model.Geolocation.Result.Geometry.Location;
 import com.weather.repository.DarkSkyApiRepository;
-import com.weather.repository.GoogleApiRepository;
 import com.weather.repository.OpenWeatherApiRepository;
 
 @Component
@@ -40,17 +38,17 @@ public class PublicServiceHelper {
     @Value("${api.api-key.google-maps}")
     private String GEOLOCATION_APPID;
     
-    private GoogleApiRepository googleApiRepo;
+    private GoogleService googleService;
     
     private OpenWeatherApiRepository openApiRepo;
     
     private DarkSkyApiRepository darkSkyRepo;
     
     @Autowired
-    public void setGoogleApiRepo(GoogleApiRepository googleApiRepo) {
-        this.googleApiRepo = googleApiRepo;
+    public void setGoogleService(GoogleService googleService) {
+        this.googleService = googleService;
     }
-    
+
     @Autowired
     public void setOpenApiRepo(OpenWeatherApiRepository openApiRepo) {
         this.openApiRepo = openApiRepo;
@@ -96,7 +94,7 @@ public class PublicServiceHelper {
     
     public Map<String, String> darkSkyProviderProcess(String cityName)
             throws JsonProcessingException, IOException {
-        Location location = getGeolocation(cityName);
+        Location location = googleService.getGeolocation(cityName);
 
         String url = UriComponentsBuilder.newInstance().scheme("https")
                 .host("api.darksky.net").path("/forecast")
@@ -120,22 +118,6 @@ public class PublicServiceHelper {
         return attributeMap;
     }
     
-    public Location getGeolocation(String cityName) throws JsonProcessingException, IOException {
-
-        String url = UriComponentsBuilder.newInstance().scheme("https").host("maps.googleapis.com")
-                .path("/maps/api/geocode/json").queryParam("address", cityName)
-                .queryParam("key", GEOLOCATION_APPID).build().encode("UTF-8").toUriString();
-
-        Geolocation geolocation = googleApiRepo.getInformationAndMapToObject(url);
-
-        log.info(String.format("Geolocation asked from Google Map API. Geolocation=[%s].",
-                geolocation));
-        
-        if(geolocation == null) {
-            throw new NullPointerException("Geolocation returned with null!");
-        }
-        return geolocation.getResults().get(0).getGeometry().getLocation();
-    }
 
     public String getOpenWeatherUrl(String cityName) throws UnsupportedEncodingException {
         String url = UriComponentsBuilder.newInstance().scheme("http")
