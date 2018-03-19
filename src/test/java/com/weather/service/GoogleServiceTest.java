@@ -1,6 +1,7 @@
 package com.weather.service;
 
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
@@ -27,10 +28,10 @@ import com.weather.repository.GoogleApiRepository;
 public class GoogleServiceTest {
     
     @InjectMocks
-    GoogleService underTest;
+    private GoogleService underTest;
 
     @Mock
-    GoogleApiRepository googleRepo;
+    private GoogleApiRepository googleRepo;
     
     @Test
     public void checkGetGeolocation() throws JsonProcessingException, IOException {
@@ -58,6 +59,7 @@ public class GoogleServiceTest {
                 return geo;
             }
         });
+        
         //WHEN
         Location locationRes = underTest.getGeolocation(city);
         //THEN
@@ -66,5 +68,21 @@ public class GoogleServiceTest {
               
             Mockito.verify(googleRepo, Mockito.times(1)).getInformationAndMapToObject(
                     BDDMockito.contains(city));
+    }
+    
+    @Test
+    public void shouldThrowNullPointerExceptionIfCantGetGeolocation() throws JsonProcessingException, IOException {
+        //GIVEN
+        String city = "Szeged";
+        
+        Mockito.when(googleRepo.getInformationAndMapToObject(BDDMockito.anyString()))
+            .thenReturn(null);
+        //WHEN
+        try {
+            underTest.getGeolocation(city);
+        } catch (NullPointerException ex) {
+        //THEN
+            assertEquals("Geolocation returned with null!", ex.getMessage());
+        }
     }
 }

@@ -39,19 +39,19 @@ import com.weather.repository.OpenWeatherApiRepository;
 public class PublicServiceHelperTest {
     
     @Mock
-    GoogleService googleService;
+    private GoogleService googleService;
     
     @Mock
-    GoogleApiRepository googleRepo;
+    private GoogleApiRepository googleRepo;
     
     @Mock
-    DarkSkyApiRepository darkSkyRepo;
+    private DarkSkyApiRepository darkSkyRepo;
     
     @Mock
-    OpenWeatherApiRepository weatherRepo;
+    private OpenWeatherApiRepository weatherRepo;
     
     @InjectMocks
-    PublicServiceHelper underTest;
+    private PublicServiceHelper underTest;
     
     @Before
     public void setup() {
