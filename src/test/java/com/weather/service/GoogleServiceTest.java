@@ -77,8 +77,8 @@ public class GoogleServiceTest {
         
         Mockito.when(googleRepo.getInformationAndMapToObject(BDDMockito.anyString()))
             .thenReturn(null);
-        //WHEN
         try {
+        //WHEN
             underTest.getGeolocation(city);
         } catch (NullPointerException ex) {
         //THEN

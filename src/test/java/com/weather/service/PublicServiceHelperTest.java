@@ -171,8 +171,8 @@ public class PublicServiceHelperTest {
         
         Mockito.when(
                 weatherRepo.getInformationAndMapToObject(BDDMockito.anyString())).thenReturn(null);
-        //WHEN
         try {
+        //WHEN
             underTest.openWeatherProviderProcess("url", city);
         } catch (NullPointerException ex) {
         //THEN
@@ -190,8 +190,8 @@ public class PublicServiceHelperTest {
                 darkSkyRepo.getInformationAndMapToObject(BDDMockito.anyString())).thenReturn(null);
         
         createStubLocation(city, "43.00120", "19.4332");
-        //WHEN
         try {
+        //WHEN
             underTest.darkSkyProviderProcess(city);
         } catch (NullPointerException ex) {
         //THEN
