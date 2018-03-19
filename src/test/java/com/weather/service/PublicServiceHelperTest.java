@@ -2,6 +2,7 @@ package com.weather.service;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
@@ -136,16 +137,7 @@ public class PublicServiceHelperTest {
             }
         });
         
-        Mockito.when(googleService.getGeolocation(city)).then(new Answer<Location>() {
-
-            @Override
-            public Location answer(InvocationOnMock invoke) {
-                Location stubLocation = new Location();
-                stubLocation.setLatitude("47.4979");
-                stubLocation.setLongitude("19.0402");
-                return stubLocation;
-            }
-        });
+        createStubLocation(city, "47.4979", "19.0402");
         
         //WHEN
         Map<String, String> map = underTest.darkSkyProviderProcess(city);
@@ -156,6 +148,55 @@ public class PublicServiceHelperTest {
         
         Mockito.verify(darkSkyRepo, Mockito.times(1)).getInformationAndMapToObject
             (and(BDDMockito.contains("47.4979"), BDDMockito.contains("47.4979")));
+    }
+
+    private void createStubLocation(String city, String lat, String lng) 
+            throws JsonProcessingException, IOException {
+        Mockito.when(googleService.getGeolocation(city)).then(new Answer<Location>() {
+            @Override
+            public Location answer(InvocationOnMock invoke) {
+                Location stubLocation = new Location();
+                stubLocation.setLatitude(lat);
+                stubLocation.setLongitude(lng);
+                return stubLocation;
+            }
+        });
+    }
+    
+    @Test
+    public void openWeatherProviderProcessShouldThrowNullException() 
+            throws JsonProcessingException, IOException {
+        //GIVEN
+        String city = "Debrecen";
+        
+        Mockito.when(
+                weatherRepo.getInformationAndMapToObject(BDDMockito.anyString())).thenReturn(null);
+        //WHEN
+        try {
+            underTest.openWeatherProviderProcess("url", city);
+        } catch (NullPointerException ex) {
+        //THEN
+            assertEquals("OpenWeather repository returned with null!", ex.getMessage());
+        }
+    }
+    
+    @Test
+    public void darkSkyProcessShouldThrowNullException() 
+            throws JsonProcessingException, IOException {
+        //GIVEN
+        String city = "New York";
+        
+        Mockito.when(
+                darkSkyRepo.getInformationAndMapToObject(BDDMockito.anyString())).thenReturn(null);
+        
+        createStubLocation(city, "43.00120", "19.4332");
+        //WHEN
+        try {
+            underTest.darkSkyProviderProcess(city);
+        } catch (NullPointerException ex) {
+        //THEN
+            assertEquals("DarkSky repository returned with null!", ex.getMessage());
+        }
     }
     
 }

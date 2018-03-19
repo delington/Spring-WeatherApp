@@ -63,6 +63,10 @@ public class PublicServiceHelper {
             throws JsonProcessingException, IOException {
 
         OpenWeatherWrapper wrapper = openApiRepo.getInformationAndMapToObject(url);
+        
+        if (wrapper == null) {
+            throw new NullPointerException("OpenWeather repository returned with null!");
+        }
 
         String imgUrl = UriComponentsBuilder.newInstance()
                 .scheme("http")
@@ -104,6 +108,11 @@ public class PublicServiceHelper {
                 .build().encode("UTF-8").toUriString();
 
         DarkSkyWrapper wrapper = darkSkyRepo.getInformationAndMapToObject(url);
+        
+        if (wrapper == null) {
+            throw new NullPointerException("DarkSky repository returned with null!");
+        }
+        
         String temp = wrapper.getCurrentWeather().getTemperature();
         String desc = wrapper.getHourWeather().getSummary();
         
@@ -117,7 +126,6 @@ public class PublicServiceHelper {
         
         return attributeMap;
     }
-    
 
     public String getOpenWeatherUrl(String cityName) throws UnsupportedEncodingException {
         String url = UriComponentsBuilder.newInstance().scheme("http")

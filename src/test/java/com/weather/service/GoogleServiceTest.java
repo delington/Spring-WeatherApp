@@ -82,7 +82,7 @@ public class GoogleServiceTest {
             underTest.getGeolocation(city);
         } catch (NullPointerException ex) {
         //THEN
-            assertEquals("Geolocation returned with null!", ex.getMessage());
+            assertEquals("Google repository returned with null!", ex.getMessage());
         }
     }
 }

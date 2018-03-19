@@ -41,7 +41,7 @@ public class GoogleService {
                 geolocation));
         
         if (geolocation == null) {
-            throw new NullPointerException("Geolocation returned with null!");
+            throw new NullPointerException("Google repository returned with null!");
         }
         
         return geolocation.getResults().get(0).getGeometry().getLocation();
