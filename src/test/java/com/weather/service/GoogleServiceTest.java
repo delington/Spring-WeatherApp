@@ -70,19 +70,15 @@ public class GoogleServiceTest {
                     BDDMockito.contains(city));
     }
     
-    @Test
-    public void shouldThrowNullPointerExceptionIfCantGetGeolocation() throws JsonProcessingException, IOException {
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowIllegalArgumentExceptionIfCantGetGeolocation() throws JsonProcessingException, IOException {
         //GIVEN
         String city = "Szeged";
         
         Mockito.when(googleRepo.getInformationAndMapToObject(BDDMockito.anyString()))
             .thenReturn(null);
-        try {
         //WHEN
-            underTest.getGeolocation(city);
-        } catch (NullPointerException ex) {
-        //THEN
-            assertEquals("Google repository returned with null!", ex.getMessage());
-        }
+        underTest.getGeolocation(city);
     }
+    
 }

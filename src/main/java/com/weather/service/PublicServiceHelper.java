@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -63,10 +64,7 @@ public class PublicServiceHelper {
             throws JsonProcessingException, IOException {
 
         OpenWeatherWrapper wrapper = openApiRepo.getInformationAndMapToObject(url);
-        
-        if (wrapper == null) {
-            throw new NullPointerException("OpenWeather repository returned with null!");
-        }
+        Assert.notNull(wrapper, "OpenWeather repository returned with null!");
 
         String imgUrl = UriComponentsBuilder.newInstance()
                 .scheme("http")
@@ -88,6 +86,7 @@ public class PublicServiceHelper {
         return attributeMap;
     }
     
+    //TODO finish
     public Map<String, String> openWeatherProviderProcessWithXml(String url, String cityName)
             throws JsonProcessingException, IOException {
         RestTemplate restTemplate = new RestTemplate();
@@ -108,10 +107,7 @@ public class PublicServiceHelper {
                 .build().encode("UTF-8").toUriString();
 
         DarkSkyWrapper wrapper = darkSkyRepo.getInformationAndMapToObject(url);
-        
-        if (wrapper == null) {
-            throw new NullPointerException("DarkSky repository returned with null!");
-        }
+        Assert.notNull(wrapper, "DarkSky repository returned with null!");
         
         String temp = wrapper.getCurrentWeather().getTemperature();
         String desc = wrapper.getHourWeather().getSummary();

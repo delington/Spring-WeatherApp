@@ -163,25 +163,20 @@ public class PublicServiceHelperTest {
         });
     }
     
-    @Test
-    public void openWeatherProviderProcessShouldThrowNullException() 
+    @Test(expected = IllegalArgumentException.class)
+    public void openWeatherProviderProcessShouldThrowIllegalArgumentException() 
             throws JsonProcessingException, IOException {
         //GIVEN
         String city = "Debrecen";
         
         Mockito.when(
                 weatherRepo.getInformationAndMapToObject(BDDMockito.anyString())).thenReturn(null);
-        try {
         //WHEN
-            underTest.openWeatherProviderProcess("url", city);
-        } catch (NullPointerException ex) {
-        //THEN
-            assertEquals("OpenWeather repository returned with null!", ex.getMessage());
-        }
+        underTest.openWeatherProviderProcess("url", city);
     }
     
-    @Test
-    public void darkSkyProcessShouldThrowNullException() 
+    @Test(expected = IllegalArgumentException.class)
+    public void darkSkyProcessShouldThrowIllegalArgumentException() 
             throws JsonProcessingException, IOException {
         //GIVEN
         String city = "New York";
@@ -190,13 +185,8 @@ public class PublicServiceHelperTest {
                 darkSkyRepo.getInformationAndMapToObject(BDDMockito.anyString())).thenReturn(null);
         
         createStubLocation(city, "43.00120", "19.4332");
-        try {
         //WHEN
-            underTest.darkSkyProviderProcess(city);
-        } catch (NullPointerException ex) {
-        //THEN
-            assertEquals("DarkSky repository returned with null!", ex.getMessage());
-        }
+        underTest.darkSkyProviderProcess(city);
     }
     
 }
