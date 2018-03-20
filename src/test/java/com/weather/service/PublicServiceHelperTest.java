@@ -2,7 +2,6 @@ package com.weather.service;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
@@ -14,7 +13,6 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -82,7 +80,7 @@ public class PublicServiceHelperTest {
         //GIVEN
         String city = "Debrecen";
         
-        Mockito.when(weatherRepo.getInformationAndMapToObject(BDDMockito.contains(city)))
+        Mockito.when(weatherRepo.getInformationAndMapToObject(Mockito.contains(city)))
             .then(new Answer<OpenWeatherWrapper>() {
             
             @Override
@@ -109,7 +107,7 @@ public class PublicServiceHelperTest {
         assertThat(map.get("temp") , containsString("14"));
         
         Mockito.verify(weatherRepo, Mockito.times(1)).getInformationAndMapToObject(
-                BDDMockito.contains(city));
+                Mockito.contains(city));
     }
     
     @Test
@@ -117,7 +115,7 @@ public class PublicServiceHelperTest {
         //GIVEN
         String city = "Budapest";
         
-        Mockito.when(darkSkyRepo.getInformationAndMapToObject(BDDMockito.anyString()))
+        Mockito.when(darkSkyRepo.getInformationAndMapToObject(Mockito.anyString()))
             .then(new Answer<DarkSkyWrapper>() {
             
             @Override
@@ -147,7 +145,7 @@ public class PublicServiceHelperTest {
         assertThat(map.get("imgUrl") , is(""));
         
         Mockito.verify(darkSkyRepo, Mockito.times(1)).getInformationAndMapToObject
-            (and(BDDMockito.contains("47.4979"), BDDMockito.contains("47.4979")));
+            (and(Mockito.contains("47.4979"), Mockito.contains("47.4979")));
     }
 
     private void createStubLocation(String city, String lat, String lng) 
@@ -170,7 +168,7 @@ public class PublicServiceHelperTest {
         String city = "Debrecen";
         
         Mockito.when(
-                weatherRepo.getInformationAndMapToObject(BDDMockito.anyString())).thenReturn(null);
+                weatherRepo.getInformationAndMapToObject(Mockito.anyString())).thenReturn(null);
         //WHEN
         underTest.openWeatherProviderProcess("url", city);
     }
@@ -182,7 +180,7 @@ public class PublicServiceHelperTest {
         String city = "New York";
         
         Mockito.when(
-                darkSkyRepo.getInformationAndMapToObject(BDDMockito.anyString())).thenReturn(null);
+                darkSkyRepo.getInformationAndMapToObject(Mockito.anyString())).thenReturn(null);
         
         createStubLocation(city, "43.00120", "19.4332");
         //WHEN

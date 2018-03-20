@@ -1,7 +1,6 @@
 package com.weather.service;
 
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
@@ -9,7 +8,6 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -37,7 +35,7 @@ public class GoogleServiceTest {
     public void checkGetGeolocation() throws JsonProcessingException, IOException {
         //GIVEN
         String city = "Szeged";
-        Mockito.when(googleRepo.getInformationAndMapToObject(BDDMockito.contains(city)))
+        Mockito.when(googleRepo.getInformationAndMapToObject(Mockito.contains(city)))
             .then(new Answer<Geolocation>() {
               
             @Override
@@ -67,7 +65,7 @@ public class GoogleServiceTest {
         assertThat(locationRes.getLongitude(), containsString("20.1414254"));
               
             Mockito.verify(googleRepo, Mockito.times(1)).getInformationAndMapToObject(
-                    BDDMockito.contains(city));
+                    Mockito.contains(city));
     }
     
     @Test(expected = IllegalArgumentException.class)
@@ -75,7 +73,7 @@ public class GoogleServiceTest {
         //GIVEN
         String city = "Szeged";
         
-        Mockito.when(googleRepo.getInformationAndMapToObject(BDDMockito.anyString()))
+        Mockito.when(googleRepo.getInformationAndMapToObject(Mockito.anyString()))
             .thenReturn(null);
         //WHEN
         underTest.getGeolocation(city);
