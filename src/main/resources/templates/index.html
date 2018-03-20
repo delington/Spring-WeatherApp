@@ -1,0 +1,23 @@
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymleaf.org">
+<body>
+	<h1>Weather application</h1>
+	<br></br>
+	<form action="#" th:action="@{/process}" th:object="${cityForm}" method="POST">
+		<div>
+			Please enter the city name: <input type="text" th:field="*{name}" />
+			<p th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</p>
+		</div>
+		<br></br>
+		<input type="radio" name="provider" value="openWeather" checked="true" />OpenWeather
+		<br></br> 
+		<input type="radio" name="provider" value="darkSky" />DarkSky
+		<br></br> 
+		
+		<button style="height: 70px; width: 200px" type="submit">Find
+			out the weather!</button>
+	</form>
+
+</body>
+</html>
