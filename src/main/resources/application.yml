@@ -1,0 +1,7 @@
+api:
+  format:
+    open-weather: dummy format
+  api-key:
+    google-maps: dummykey
+    open-weather: dummykey
+    dark-sky: dummykey

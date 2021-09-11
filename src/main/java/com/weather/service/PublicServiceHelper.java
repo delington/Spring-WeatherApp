@@ -1,10 +1,11 @@
 package com.weather.service;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.Map;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.weather.model.DarkSkyWrapper;
+import com.weather.model.Geolocation.Result.Geometry.Location;
+import com.weather.model.OpenWeatherWrapper;
+import com.weather.repository.DarkSkyApiRepository;
+import com.weather.repository.OpenWeatherApiRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +16,11 @@ import org.springframework.util.Assert;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.weather.model.DarkSkyWrapper;
-import com.weather.model.OpenWeatherWrapper;
-import com.weather.model.Geolocation.Result.Geometry.Location;
-import com.weather.repository.DarkSkyApiRepository;
-import com.weather.repository.OpenWeatherApiRepository;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class PublicServiceHelper {
@@ -70,7 +70,7 @@ public class PublicServiceHelper {
                 .scheme("http")
                 .host("openweathermap.org")
                 .path(String.format("/img/w/%s.png", wrapper.getWeatherList().get(0).getIcon()))
-                .build().encode("UTF-8").toUriString();
+                .build().encode(StandardCharsets.UTF_8).toUriString();
                         
         String temp = wrapper.getMainInfromation().getTemp();
         String desc = wrapper.getWeatherList().get(0).getDescription();
@@ -104,7 +104,7 @@ public class PublicServiceHelper {
                 .path("/" + DARK_SKY_APPID)
                 .path(String.format("/%s,%s", location.getLatitude(), location.getLongitude()))
                 .queryParam("units", "si")
-                .build().encode("UTF-8").toUriString();
+                .build().encode(StandardCharsets.UTF_8).toUriString();
 
         DarkSkyWrapper wrapper = darkSkyRepo.getInformationAndMapToObject(url);
         Assert.notNull(wrapper, "DarkSky repository returned with null!");
@@ -127,7 +127,7 @@ public class PublicServiceHelper {
         String url = UriComponentsBuilder.newInstance().scheme("http")
                 .host("api.openweathermap.org").path("/data/2.5/weather").queryParam("q", cityName)
                 .queryParam("units", "metric").queryParam("APPID", OPEN_WEATHER_APPID)
-                .queryParam("mode", OPEN_WEATHER_FORMAT).build().encode("UTF-8").toUriString();
+                .queryParam("mode", OPEN_WEATHER_FORMAT).build().encode(StandardCharsets.UTF_8).toUriString();
 
         return url;
     }
