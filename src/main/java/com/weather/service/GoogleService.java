@@ -26,7 +26,7 @@ public class GoogleService {
     
     @Value("${api.api-key.google-maps}")
     private String GEOLOCATION_APPID;
-    
+
     private GoogleApiRepository googleApiRepo;
 
     @Autowired
@@ -36,11 +36,11 @@ public class GoogleService {
     
     public Location getGeolocation(String cityName) throws JsonProcessingException, IOException {
 
-        String url = UriComponentsBuilder.newInstance().scheme("https").host("maps.googleapis.com")
+        final String url = UriComponentsBuilder.newInstance().scheme("https").host("maps.googleapis.com")
                 .path("/maps/api/geocode/json").queryParam("address", cityName)
                 .queryParam("key", GEOLOCATION_APPID).build().encode(StandardCharsets.UTF_8).toUriString();
 
-        Geolocation geolocation = googleApiRepo.getInformationAndMapToObject(url);
+        final Geolocation geolocation = googleApiRepo.getInformationAndMapToObject(url);
 
         log.info(String.format("Geolocation asked from Google Map API. Geolocation=[%s].",
                 geolocation));
@@ -55,7 +55,7 @@ public class GoogleService {
         if (geolocation == null) {
             throw new NoDataException("Geolocation call returned with null!");
         }
-        var geolocationResultList = geolocation.getResults();
+        final var geolocationResultList = geolocation.getResults();
         if (CollectionUtils.isEmpty(geolocationResultList)) {
             throw new NoDataException("Geolocation result list was empty!");
         }

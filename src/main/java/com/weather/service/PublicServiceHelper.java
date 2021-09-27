@@ -8,7 +8,6 @@ import com.weather.repository.DarkSkyApiRepository;
 import com.weather.repository.OpenWeatherApiRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -39,43 +38,34 @@ public class PublicServiceHelper {
     @Value("${api.api-key.google-maps}")
     private String GEOLOCATION_APPID;
     
-    private GoogleService googleService;
+    private final GoogleService googleService;
     
-    private OpenWeatherApiRepository openApiRepo;
+    private final OpenWeatherApiRepository openApiRepo;
     
-    private DarkSkyApiRepository darkSkyRepo;
+    private final DarkSkyApiRepository darkSkyRepo;
     
-    @Autowired
-    public void setGoogleService(GoogleService googleService) {
+    public PublicServiceHelper(GoogleService googleService, OpenWeatherApiRepository openApiRepo, DarkSkyApiRepository darkSkyRepo) {
         this.googleService = googleService;
-    }
-
-    @Autowired
-    public void setOpenApiRepo(OpenWeatherApiRepository openApiRepo) {
         this.openApiRepo = openApiRepo;
-    }
-
-    @Autowired
-    public void setDarkSkyRepo(DarkSkyApiRepository darkSkyRepo) {
         this.darkSkyRepo = darkSkyRepo;
     }
-    
+
     public Map<String, String> openWeatherProviderProcess(String url, String cityName)
             throws JsonProcessingException, IOException {
 
-        OpenWeatherWrapper wrapper = openApiRepo.getInformationAndMapToObject(url);
+        final OpenWeatherWrapper wrapper = openApiRepo.getInformationAndMapToObject(url);
         Assert.notNull(wrapper, "OpenWeather repository returned with null!");
 
-        String imgUrl = UriComponentsBuilder.newInstance()
+        final String imgUrl = UriComponentsBuilder.newInstance()
                 .scheme("http")
                 .host("openweathermap.org")
                 .path(String.format("/img/w/%s.png", wrapper.getWeatherList().get(0).getIcon()))
                 .build().encode(StandardCharsets.UTF_8).toUriString();
                         
-        String temp = wrapper.getMainInfromation().getTemp();
-        String desc = wrapper.getWeatherList().get(0).getDescription();
+        final String temp = wrapper.getMainInfromation().getTemp();
+        final String desc = wrapper.getWeatherList().get(0).getDescription();
         
-        Map<String, String> attributeMap = new HashMap<>();
+        final Map<String, String> attributeMap = new HashMap<>();
         attributeMap.put("imgUrl", imgUrl);
         attributeMap.put("temp", temp);
         attributeMap.put("desc", desc);
@@ -97,22 +87,22 @@ public class PublicServiceHelper {
     
     public Map<String, String> darkSkyProviderProcess(String cityName)
             throws JsonProcessingException, IOException {
-        Location location = googleService.getGeolocation(cityName);
+        final Location location = googleService.getGeolocation(cityName);
 
-        String url = UriComponentsBuilder.newInstance().scheme("https")
+        final String url = UriComponentsBuilder.newInstance().scheme("https")
                 .host("api.darksky.net").path("/forecast")
                 .path("/" + DARK_SKY_APPID)
                 .path(String.format("/%s,%s", location.getLatitude(), location.getLongitude()))
                 .queryParam("units", "si")
                 .build().encode(StandardCharsets.UTF_8).toUriString();
 
-        DarkSkyWrapper wrapper = darkSkyRepo.getInformationAndMapToObject(url);
+        final DarkSkyWrapper wrapper = darkSkyRepo.getInformationAndMapToObject(url);
         Assert.notNull(wrapper, "DarkSky repository returned with null!");
         
-        String temp = wrapper.getCurrentWeather().getTemperature();
-        String desc = wrapper.getHourWeather().getSummary();
+        final String temp = wrapper.getCurrentWeather().getTemperature();
+        final String desc = wrapper.getHourWeather().getSummary();
         
-        Map<String, String> attributeMap = new HashMap<>();
+        final Map<String, String> attributeMap = new HashMap<>();
         attributeMap.put("imgUrl", "");
         attributeMap.put("temp", temp);
         attributeMap.put("desc", desc);
@@ -123,12 +113,10 @@ public class PublicServiceHelper {
         return attributeMap;
     }
 
-    public String getOpenWeatherUrl(String cityName) throws UnsupportedEncodingException {
-        String url = UriComponentsBuilder.newInstance().scheme("http")
+    public String getOpenWeatherUrl(final String cityName) throws UnsupportedEncodingException {
+        return UriComponentsBuilder.newInstance().scheme("http")
                 .host("api.openweathermap.org").path("/data/2.5/weather").queryParam("q", cityName)
                 .queryParam("units", "metric").queryParam("APPID", OPEN_WEATHER_APPID)
                 .queryParam("mode", OPEN_WEATHER_FORMAT).build().encode(StandardCharsets.UTF_8).toUriString();
-
-        return url;
     }
 }
