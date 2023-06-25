@@ -35,7 +35,7 @@ public class GoogleServiceTest {
     public void checkGetGeolocation() throws JsonProcessingException, IOException {
         //GIVEN
         String city = "Szeged";
-        Mockito.when(googleRepo.getInformationAndMapToObject(Mockito.contains(city)))
+        Mockito.when(googleRepo.getData(Mockito.contains(city)))
             .then(new Answer<Geolocation>() {
               
             @Override
@@ -64,7 +64,7 @@ public class GoogleServiceTest {
         assertThat(locationRes.getLatitude(), containsString("46.2530102"));
         assertThat(locationRes.getLongitude(), containsString("20.1414254"));
               
-            Mockito.verify(googleRepo, Mockito.times(1)).getInformationAndMapToObject(
+            Mockito.verify(googleRepo, Mockito.times(1)).getData(
                     Mockito.contains(city));
     }
     
@@ -73,7 +73,7 @@ public class GoogleServiceTest {
         //GIVEN
         String city = "Szeged";
         
-        Mockito.when(googleRepo.getInformationAndMapToObject(Mockito.anyString()))
+        Mockito.when(googleRepo.getData(Mockito.anyString()))
             .thenReturn(null);
         //WHEN
         underTest.getGeolocation(city);

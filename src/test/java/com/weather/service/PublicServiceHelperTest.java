@@ -80,7 +80,7 @@ public class PublicServiceHelperTest {
         //GIVEN
         String city = "Debrecen";
         
-        Mockito.when(weatherRepo.getInformationAndMapToObject(Mockito.contains(city)))
+        Mockito.when(weatherRepo.getData(Mockito.contains(city)))
             .then(new Answer<OpenWeatherWrapper>() {
             
             @Override
@@ -106,7 +106,7 @@ public class PublicServiceHelperTest {
         assertThat(map.get("desc") , containsString("Windy with rain"));
         assertThat(map.get("temp") , containsString("14"));
         
-        Mockito.verify(weatherRepo, Mockito.times(1)).getInformationAndMapToObject(
+        Mockito.verify(weatherRepo, Mockito.times(1)).getData(
                 Mockito.contains(city));
     }
     
@@ -115,7 +115,7 @@ public class PublicServiceHelperTest {
         //GIVEN
         String city = "Budapest";
         
-        Mockito.when(darkSkyRepo.getInformationAndMapToObject(Mockito.anyString()))
+        Mockito.when(darkSkyRepo.getData(Mockito.anyString()))
             .then(new Answer<DarkSkyWrapper>() {
             
             @Override
@@ -144,7 +144,7 @@ public class PublicServiceHelperTest {
         assertThat(map.get("temp") , containsString("20"));
         assertThat(map.get("imgUrl") , is(""));
         
-        Mockito.verify(darkSkyRepo, Mockito.times(1)).getInformationAndMapToObject
+        Mockito.verify(darkSkyRepo, Mockito.times(1)).getData
             (and(Mockito.contains("47.4979"), Mockito.contains("47.4979")));
     }
 
@@ -168,7 +168,7 @@ public class PublicServiceHelperTest {
         String city = "Debrecen";
         
         Mockito.when(
-                weatherRepo.getInformationAndMapToObject(Mockito.anyString())).thenReturn(null);
+                weatherRepo.getData(Mockito.anyString())).thenReturn(null);
         //WHEN
         underTest.openWeatherProviderProcess("url", city);
     }
@@ -180,7 +180,7 @@ public class PublicServiceHelperTest {
         String city = "New York";
         
         Mockito.when(
-                darkSkyRepo.getInformationAndMapToObject(Mockito.anyString())).thenReturn(null);
+                darkSkyRepo.getData(Mockito.anyString())).thenReturn(null);
         
         createStubLocation(city, "43.00120", "19.4332");
         //WHEN

@@ -2,6 +2,6 @@ package com.weather.repository;
 
 public interface ApiRepository<T> {
     
-    public T getInformationAndMapToObject(String url);
+    public T getData(String url);
     
 }

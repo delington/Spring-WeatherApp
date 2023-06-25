@@ -13,7 +13,7 @@ public class GoogleApiRepository implements ApiRepository<Geolocation> {
     private static final Logger log = LoggerFactory.getLogger(GoogleApiRepository.class);
 
     @Override
-    public Geolocation getInformationAndMapToObject(String url) {
+    public Geolocation getData(String url) {
         log.info("GoogleApiRepository.getGeolocation invoked. Calling google api...");
         return new RestTemplate().getForObject(url, Geolocation.class);
     }

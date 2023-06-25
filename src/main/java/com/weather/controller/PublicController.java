@@ -4,6 +4,8 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,18 +20,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.weather.form.CityForm;
 import com.weather.service.PublicService;
 
+@Slf4j
+@AllArgsConstructor
 @Controller
 public class PublicController {
 
-    private static final Logger log = LoggerFactory.getLogger(PublicController.class);
-    
     private PublicService publicService;
     
-    @Autowired
-    public void setPublicService(PublicService publicService) {
-        this.publicService = publicService;
-    }
-
     @RequestMapping("/")
     public String index(Model model) {
         log.info("Main page called. Returning index page...");
@@ -39,10 +36,11 @@ public class PublicController {
     }
 
     @RequestMapping(value = "/process", method = RequestMethod.POST)
-    public String process(Model model, @RequestParam(value = "name") String cityName,
-            @RequestParam(value = "provider") String apiProvider, 
-            @Valid @ModelAttribute CityForm form, BindingResult bindingResult) throws Exception {
-        
+    public String process(Model model,
+                          @RequestParam(value = "name") String cityName,
+                          @RequestParam(value = "provider") String apiProvider,
+                          @Valid @ModelAttribute CityForm form,
+                          BindingResult bindingResult) throws Exception {
         if (bindingResult.hasErrors()) {
             return "index";
         }
@@ -58,5 +56,4 @@ public class PublicController {
         
         return "process";
     }
-
 }

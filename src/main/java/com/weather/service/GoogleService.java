@@ -40,7 +40,7 @@ public class GoogleService {
                 .path("/maps/api/geocode/json").queryParam("address", cityName)
                 .queryParam("key", GEOLOCATION_APPID).build().encode(StandardCharsets.UTF_8).toUriString();
 
-        final Geolocation geolocation = googleApiRepo.getInformationAndMapToObject(url);
+        final Geolocation geolocation = googleApiRepo.getData(url);
 
         log.info(String.format("Geolocation asked from Google Map API. Geolocation=[%s].",
                 geolocation));
