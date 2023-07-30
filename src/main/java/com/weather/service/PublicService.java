@@ -1,51 +1,38 @@
 package com.weather.service;
 
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-
 @Slf4j
 @Service
+@AllArgsConstructor
 public class PublicService {
 
-    @Value("${api.format.open-weather}")
-    private String OPEN_WEATHER_FORMAT;
+    public static final String SEVEN_TIMER_IMG_PREFIX_URL = "http://www.7timer.info/img/misc/about_civil_";
+    private final NominatimService nominatimService;
+    private SevenTimerService sevenTimerService;
 
-    @Value("${api.api-key.google-maps}")
-    private String GEOLOCATION_APPID;
-
-    private PublicServiceHelper serviceHelper;
-
-    public Map<String, String> process(String cityName, String apiProvider)
-            throws JsonProcessingException, IOException {
+    public Map<String, String> process(String cityName)
+            throws IOException {
 
         Map<String, String> attrMap = new HashMap<>();
-        String url = serviceHelper.getOpenWeatherUrl(cityName);
 
-        if (apiProvider.equals("openWeather") && OPEN_WEATHER_FORMAT.equalsIgnoreCase("json")) {
-            
-            log.info("OpenWeather provider called with JSON");
-            attrMap = serviceHelper.openWeatherProviderProcess(url, cityName);
-        } else if (apiProvider.equals("openWeather") && OPEN_WEATHER_FORMAT.equalsIgnoreCase("xml")) {
-            
-            log.info("OpenWeather provider called with XML");
-            attrMap = serviceHelper.openWeatherProviderProcessWithXml(url, cityName);
-        } else if (apiProvider.equals("darkSky")) {
-            
-            log.info("DarkSky provider called");
-            attrMap = serviceHelper.darkSkyProviderProcess(cityName);
-        }
-        
+        final var geoLocation = nominatimService.getGeolocation(cityName);
+        final var weatherData = sevenTimerService.getWeatherData(geoLocation.getLat(), geoLocation.getLon());
+        log.info("Weather data: " + weatherData);
+
+        attrMap.put("cityName", cityName);
+        attrMap.put("desc", weatherData.getWeather());
+        attrMap.put("imgUrl", SEVEN_TIMER_IMG_PREFIX_URL + weatherData.getWeather() + ".png");
+
+        final var avgTemp = (weatherData.getTemperature().getMax() + weatherData.getTemperature().getMin()) / 2;
+        attrMap.put("temp", String.valueOf(avgTemp));
+
         return attrMap;
     }
     
