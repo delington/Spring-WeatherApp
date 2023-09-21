@@ -1,13 +1,20 @@
 <html>
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="../static/css/pico.min.css" th:href="@{css/pico.min.css}">
+	<title>Result</title>
+</head>
 <body>
-	<h1 th:text="'Weather in '  + ${cityName}"></h1>
-	<img th:src="${imgUrl}" alt="No picture available" height="100" width="100" />
-	<p th:text="'Weather description: ' + ${desc}"></p>
-	<br></br>
-	<p th:text="'Temperature: ' + ${temp} + ' Celsius'"></p>
+	<main class="container">
+		<h1 th:text="'Weather in '  + ${cityName}"></h1>
+		<img th:src="${imgUrl}" alt="No picture available" height="100" width="100" />
+		<p th:text="'Weather description: ' + ${desc}"></p>
+		<br></br>
+		<p th:text="'Temperature: ' + ${temp} + ' Celsius'"></p>
 
-	<form action="/" method="GET">
-		<button style="height:70px;width:200px">Try it again!</button>
-	</form>
+		<form action="/" method="GET">
+			<button>Try it again!</button>
+		</form>
+	</main>
 </body>
 </html>

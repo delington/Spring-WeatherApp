@@ -3,21 +3,18 @@
       xmlns:th="http://www.thymleaf.org">
 <head>
 	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="../static/css/pico.min.css" th:href="@{css/pico.min.css}">
 	<title>Form Example</title>
 </head>
 <body>
-	<h1>Weather application</h1>
-	<br>
-	<form action="#" th:action="@{/process}" method="POST">
-		<div>
-			<label for="cityName">City name:</label>
-			<input type="text" id="cityName" name="cityName" />
-		</div>
-		<br>
-
-		<button style="height: 70px; width: 200px" type="submit">Find
-			out the weather!</button>
-	</form>
-
+	<main class="container">
+		<h1>Weather application</h1>
+		<form class="grid" action="#" th:action="@{/process}" method="POST">
+			<label for="cityName">City name:
+				<input type="text" id="cityName" name="cityName" required />
+			</label>
+			<button type="submit">Find out the weather!</button>
+		</form>
+	</main>
 </body>
 </html>
